@@ -26,4 +26,7 @@ public class PlayerBullet : MonoBehaviour
         // The bullet will move forward until destroyed.
         bulletTransform.position = new Vector3(bulletTransform.position.x + (bulletSpeed * Time.deltaTime * direction), bulletTransform.position.y, bulletTransform.position.z);
     }
+    void OnBecameInvisible() {
+        Destroy(gameObject);
+    }
 }
