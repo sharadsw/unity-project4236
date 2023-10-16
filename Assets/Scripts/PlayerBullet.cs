@@ -18,6 +18,8 @@ public class PlayerBullet : MonoBehaviour
         player = GameObject.Find("Player");
         // Set the direction of the bullet upon creation. -1 for left, 1 for right.
         direction = player.GetComponent<PlayerController>().facingDirection;
+        // Ignore collisions with the player.
+        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 
     // Update is called once per frame

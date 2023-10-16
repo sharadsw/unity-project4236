@@ -5,10 +5,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform playerTransform;
+    public GameObject player;
     // Stat variables.
     [SerializeField] private float walkSpeed = 5.0f;
     [SerializeField] private float jumpForce = 14f;
     [SerializeField] private float shootCooldown = 0.5f;
+    [SerializeField] private float damageCooldown = 1.0f;
+    [SerializeField] private float health = 3.0f;
     // Reference Variables
     public float facingDirection = 1.0f;
     public GameObject bulletPrefab;
@@ -16,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D coll;
     // Status Variables
     public bool canShoot = true;
+    public bool vulnerable = true;
     // Recognize Ground from it being on the Ground layer.
     [SerializeField] private LayerMask jumpableGround;
 
@@ -25,6 +29,7 @@ public class PlayerController : MonoBehaviour
         // Initialize Rigidbody and Box Collider
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
+
     }
 
     // Update is called once per frame
@@ -62,10 +67,36 @@ public class PlayerController : MonoBehaviour
     {
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
-    // ShootCooldown
+    // ShootCooldown.
     IEnumerator ShootCooldown() {
         canShoot = false;
         yield return new WaitForSeconds(shootCooldown);
         canShoot = true;
     }
+    // Damage the player, start a damage cooldown and trigger PlayerDeath if health runs out.
+    public void DamagePlayer() {
+        if (vulnerable) {
+            health--;
+            if (health <= 0)
+            {
+                PlayerDeath();
+            }
+            else {
+                StartCoroutine(DamageCooldown());
+            }
+
+        }
+    }
+    // DamageCooldown.
+    IEnumerator DamageCooldown() {
+        vulnerable = false;
+        yield return new WaitForSeconds(damageCooldown);
+        vulnerable = true;
+    }
+    // Deactivate the player if health runs out or by instant death, such as falling.
+    public void PlayerDeath() {
+        // Deactivating is safer, so it is better than destroying the player object.
+        player.SetActive(false);
+    }
+
 }
