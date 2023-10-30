@@ -37,5 +37,20 @@ public class Crawler : EnemyProperties
             facingDirection = -1.0f;
         }
     }
-    
+    // Turn in response to colliding with other enemies.
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //UnityEngine.Debug.Log("Collision Detected");
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerScript.DamagePlayer();
+        }
+        if (collision.gameObject.CompareTag("PlayerAttack"))
+        {
+            DamageEnemy();
+            // Destroy the player's bullet that hit.
+            Destroy(collision.gameObject);
+        }
+        if (collision.gameObject.tag == "Enemy") Turn();
+    }
 }

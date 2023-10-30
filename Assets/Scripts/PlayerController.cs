@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     private Rigidbody2D rb;
     private BoxCollider2D coll;
+    public TextMeshProUGUI healthText;
     // Status Variables
     public bool canShoot = true;
     public bool vulnerable = true;
@@ -29,7 +31,7 @@ public class PlayerController : MonoBehaviour
         // Initialize Rigidbody and Box Collider
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
-
+        healthText.text = "Health: " + health;
     }
 
     // Update is called once per frame
@@ -77,6 +79,8 @@ public class PlayerController : MonoBehaviour
     public void DamagePlayer() {
         if (vulnerable) {
             health--;
+            // Update Health Text.
+            healthText.text = "Health: " + health;
             if (health <= 0)
             {
                 PlayerDeath();
