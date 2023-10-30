@@ -20,6 +20,7 @@ public class PlayerBullet : MonoBehaviour
         direction = player.GetComponent<PlayerController>().facingDirection;
         // Ignore collisions with the player.
         Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+
     }
 
     // Update is called once per frame
@@ -28,7 +29,16 @@ public class PlayerBullet : MonoBehaviour
         // The bullet will move forward until destroyed.
         bulletTransform.position = new Vector3(bulletTransform.position.x + (bulletSpeed * Time.deltaTime * direction), bulletTransform.position.y, bulletTransform.position.z);
     }
+    // Destroy bullets when they leave the screen.
     void OnBecameInvisible() {
         Destroy(gameObject);
+    }
+    // Ignore collisions with the player, player and enemy bullets, and the ground.
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        Physics2D.IgnoreLayerCollision(8, 6);
+        Physics2D.IgnoreLayerCollision(8, 7);
+        Physics2D.IgnoreLayerCollision(8, 8);
+        Physics2D.IgnoreLayerCollision(8, 10);
     }
 }
