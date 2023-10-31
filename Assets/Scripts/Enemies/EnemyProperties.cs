@@ -39,7 +39,7 @@ public class EnemyProperties : MonoBehaviour
     }
     // Script to damage an enemy and destroy it if it runs out of health.
     public void DamageEnemy() {
-        if (!guarding)
+        if (GetGuard() == false)
         {
             health--;
 
