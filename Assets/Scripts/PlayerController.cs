@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 14f;
     [SerializeField] private float shootCooldown = 0.5f;
     [SerializeField] private float damageCooldown = 1.0f;
-    [SerializeField] private float health = 3.0f;
+    [SerializeField] private float maxHealth = 3.0f;
     // Reference Variables
     public float facingDirection = 1.0f;
     public GameObject bulletPrefab;
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     // Status Variables
     public bool canShoot = true;
     public bool vulnerable = true;
+    private float health;
     // Recognize Ground from it being on the Ground layer.
     [SerializeField] private LayerMask jumpableGround;
 
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
         // Initialize Rigidbody and Box Collider
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
+        // Initialize Health.
+        health = maxHealth;
         healthText.text = "Health: " + health;
     }
 
@@ -102,5 +105,16 @@ public class PlayerController : MonoBehaviour
         // Deactivating is safer, so it is better than destroying the player object.
         player.SetActive(false);
     }
-
+    // Heals the player based on recoverHealth, but makes sure not to go past max health.
+    public void Recover(float recoverHealth) {
+        if (health + recoverHealth >= maxHealth)
+        {
+            health = maxHealth;
+        }
+        else {
+            health += recoverHealth;
+        }
+        // Update Health Text.
+        healthText.text = "Health: " + health;
+    }
 }

@@ -31,10 +31,19 @@ public class EnemyProperties : MonoBehaviour
         if (collision.gameObject.CompareTag("Player")) {
             playerScript.DamagePlayer();
         }
-        if (collision.gameObject.CompareTag("PlayerAttack")) {
-            DamageEnemy();
+        
+    }
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        //UnityEngine.Debug.Log("Trigger Detected");
+        if (other.gameObject.CompareTag("PlayerAttack"))
+        {
             // Destroy the player's bullet that hit.
-            Destroy(collision.gameObject);
+            Destroy(other.gameObject);
+            // Damage enemy.
+            DamageEnemy();
+            
         }
     }
     // Script to damage an enemy and destroy it if it runs out of health.

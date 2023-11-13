@@ -7,6 +7,7 @@ public class EnemyBullet : MonoBehaviour
     // References to the player, the player's direction and the bullet itself.
     private GameObject player;
     public Transform bulletTransform;
+    private Rigidbody2D rb;
     private float direction;
     protected PlayerController playerScript;
     // Stats
@@ -15,15 +16,21 @@ public class EnemyBullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Assign RigidBody.
+        rb = GetComponent<Rigidbody2D>();
         // Assign player.
         player = GameObject.Find("Player");
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        
+        // Direction.
+        Vector3 direction = player.transform.position - transform.position;
+        rb.velocity = new Vector2(direction.x, direction.y).normalized * bulletSpeed;
     }
     
     // Update is called once per frame
     void Update()
     {
-        transform.position += transform.right * Time.deltaTime * bulletSpeed;
+        //transform.position += transform.right * Time.deltaTime * bulletSpeed;
     }
     // Destroy bullets when they leave the screen.
     void OnBecameInvisible()
@@ -33,11 +40,10 @@ public class EnemyBullet : MonoBehaviour
     // Ignore collisions with the player, enemies, player and enemy bullets, and the ground. (Events still trigger, stops the pushing.)
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        Physics2D.IgnoreLayerCollision(8, 6);
-        Physics2D.IgnoreLayerCollision(8, 7);
-        Physics2D.IgnoreLayerCollision(8, 8);
-        Physics2D.IgnoreLayerCollision(8, 9);
-        Physics2D.IgnoreLayerCollision(8, 10);
+        Physics2D.IgnoreLayerCollision(10, 6);
+        Physics2D.IgnoreLayerCollision(10, 8);
+        Physics2D.IgnoreLayerCollision(10, 9);
+        Physics2D.IgnoreLayerCollision(10, 10);
         // If colliding with the player, damage the player and destroy the bullet.
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -46,8 +52,11 @@ public class EnemyBullet : MonoBehaviour
         }
 
     }
-    public void OnTriggerEnter2D(Collider2D collision)
+    public void OnTriggerEnter2D(Collider2D other)
     {
-        this.GetComponent<Rigidbody2D>().gravityScale = 0f;
+        if (other.gameObject.CompareTag("Player")) {
+            playerScript.DamagePlayer();
+            Destroy(gameObject);
+        }
     }
 }
