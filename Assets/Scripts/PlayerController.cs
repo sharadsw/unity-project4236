@@ -25,7 +25,8 @@ public class PlayerController : MonoBehaviour
     private float health;
     // Recognize Ground from it being on the Ground layer.
     [SerializeField] private LayerMask jumpableGround;
-
+    // GameManager
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
         // Initialize Health.
         health = maxHealth;
         healthText.text = "Health: " + health;
+        // GameManager
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -102,6 +105,8 @@ public class PlayerController : MonoBehaviour
     }
     // Deactivate the player if health runs out or by instant death, such as falling.
     public void PlayerDeath() {
+        // Game Over
+        gameManager.GameOver();
         // Deactivating is safer, so it is better than destroying the player object.
         player.SetActive(false);
     }
@@ -117,4 +122,13 @@ public class PlayerController : MonoBehaviour
         // Update Health Text.
         healthText.text = "Health: " + health;
     }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        // Die instantly if the death zone is collided with.
+        if (other.gameObject.CompareTag("DeathZone"))
+        {
+            PlayerDeath();
+        }
+    }
+
 }

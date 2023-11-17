@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Enemy
   - EnemyAttack
+  - DeathZone
   layers:
   - Default
   - TransparentFX

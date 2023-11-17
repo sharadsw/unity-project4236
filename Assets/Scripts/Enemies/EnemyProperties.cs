@@ -12,6 +12,9 @@ public class EnemyProperties : MonoBehaviour
     [SerializeField] protected float speed = 2.0f;
     // Flags enemies should have.
     protected bool guarding = false;
+    // Invincibility frame to prevent the same bullet from damaging twice.
+    private bool vulnerable = true;
+    [SerializeField] private float damageCooldown = 0.1f;
     // Start is called before the first frame update
     public void Start()
     {
@@ -37,7 +40,7 @@ public class EnemyProperties : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other)
     {
         //UnityEngine.Debug.Log("Trigger Detected");
-        if (other.gameObject.CompareTag("PlayerAttack"))
+        if (other.gameObject.CompareTag("PlayerAttack") && vulnerable)
         {
             // Destroy the player's bullet that hit.
             Destroy(other.gameObject);
@@ -45,23 +48,37 @@ public class EnemyProperties : MonoBehaviour
             DamageEnemy();
             
         }
+        // Die instantly if the death zone is collided with.
+        if (other.gameObject.CompareTag("DeathZone")) {
+            EnemyDeath();
+        }
     }
     // Script to damage an enemy and destroy it if it runs out of health.
     public void DamageEnemy() {
         if (GetGuard() == false)
         {
             health--;
-
+            StartCoroutine(DamageCooldown());
             //UnityEngine.Debug.Log("Damaged Enemy");
             if (health <= 0)
             {
-                Destroy(gameObject);
+                EnemyDeath();
             }
         } else
         {
             // TODO: ADD A SOUND QUEUE TO INDICATE AN ATTACK BEING BLOCKED.
 
         }
+    }
+    IEnumerator DamageCooldown()
+    {
+        vulnerable = false;
+        yield return new WaitForSeconds(damageCooldown);
+        vulnerable = true;
+    }
+    // Destroy the enemy, and trigger anything you want to happen upon death.
+    public void EnemyDeath() {
+        Destroy(gameObject);
     }
     // Getter and setter for guard.
     public bool GetGuard() {
