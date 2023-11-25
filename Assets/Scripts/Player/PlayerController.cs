@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private float health;
     // Recognize Ground from it being on the Ground layer.
     [SerializeField] private LayerMask jumpableGround;
-    // GameManager
+    // Scripts
     private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
@@ -63,7 +63,9 @@ public class PlayerController : MonoBehaviour
 
     // Script to walk, with movement multiplied by either a 1 or -1 based on direction.
     void Walk() {
-        playerTransform.position = new Vector3(playerTransform.position.x + (walkSpeed * Time.deltaTime * facingDirection), playerTransform.position.y, playerTransform.position.z);
+
+        //playerTransform.position = new Vector3(playerTransform.position.x + (walkSpeed * Time.deltaTime * facingDirection), playerTransform.position.y, playerTransform.position.z);
+        this.rb.velocity = new Vector2(this.walkSpeed * facingDirection, this.rb.velocity.y);
     }
     // Script to shoot bullets.
     void Shoot() {
