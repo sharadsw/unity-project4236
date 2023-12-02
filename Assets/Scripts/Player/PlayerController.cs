@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
         healthText.text = "Health: " + health;
         // GameManager
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        
     }
 
     // Update is called once per frame
