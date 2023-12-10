@@ -7,6 +7,7 @@ public class Chaser : EnemyProperties
 {
     // References for the Chaser.
     private GameObject player;
+    [SerializeField] private GameObject guardIndicator;
     
     // Start is called before the first frame update
     void Start()
@@ -36,9 +37,11 @@ public class Chaser : EnemyProperties
         if ((DistanceToPlayer() > 0 && playerScript.facingDirection <= 0) || (DistanceToPlayer() <= 0 && playerScript.facingDirection > 0))
         {
             SetGuard(true);
+            guardIndicator.SetActive(true);
         }
         else {
             SetGuard(false);
+            guardIndicator.SetActive(false);
         }
     }
     // When active, follows the player.

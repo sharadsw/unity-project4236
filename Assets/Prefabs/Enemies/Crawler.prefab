@@ -108,7 +108,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 5
 --- !u!61 &1818150819948498073
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   speed: 2
+  damageCooldown: 0.1
   facingDirection: -1
   wallCheck: {fileID: 0}
 --- !u!1 &2152982804218181006

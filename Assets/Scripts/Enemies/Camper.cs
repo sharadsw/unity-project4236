@@ -10,6 +10,7 @@ public class Camper : EnemyProperties
     // References for the Camper.
     private GameObject player;
     [SerializeField] private GameObject enemyBullet;
+    [SerializeField] private GameObject guardIndicator;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +42,9 @@ public class Camper : EnemyProperties
     {
         UnityEngine.Debug.Log("Guard");
         SetGuard(true);
+        guardIndicator.SetActive(true);
         yield return new WaitForSeconds(guardTime);
+        guardIndicator.SetActive(false);
         SetGuard(false);
 
         // Start BeforeShoot.

@@ -31,4 +31,8 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+    // Return to main menu.
+    public void QuitGame() {
+        SceneManager.LoadScene("MenuScene");
+    }
 }
