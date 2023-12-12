@@ -52,15 +52,41 @@ public class SnakeBoss : EnemyProperties
         switch (directionState) { 
         // Left
         case 0:
-                if (transform.position.x == leftBound) {
+                if (transform.position.x == leftBound)
+                {
                     EmergencyTurn();
-                } else {
+                }
+                else if (transform.position.x == 14.5f && transform.position.y == -4.5f) {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x == -5.5f && transform.position.y == -4.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x == 4.5f && transform.position.y == 0.5f)
+                {
+                    EmergencyTurn();
+                }
+                else
+                {
                     transform.position = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
                 }
             break;
         // Right
         case 1:
                 if (transform.position.x == rightBound)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x == -14.5f && transform.position.y == -4.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x == 5.5f && transform.position.y == -4.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x == -4.5f && transform.position.y == 0.5f)
                 {
                     EmergencyTurn();
                 }
@@ -75,6 +101,18 @@ public class SnakeBoss : EnemyProperties
                 {
                     EmergencyTurn();
                 }
+                else if (transform.position.x <= 3.5f && transform.position.x >= -3.5f && transform.position.y == -0.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x <= -6.5f && transform.position.x >= -13.5f && transform.position.y == -5.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x <= 13.5f && transform.position.x >= 6.5f && transform.position.y == -5.5f)
+                {
+                    EmergencyTurn();
+                }
                 else
                 {
                     transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
@@ -85,7 +123,20 @@ public class SnakeBoss : EnemyProperties
                 if (transform.position.y == lowerBound)
                 {
                     EmergencyTurn();
-                } else { 
+                }
+                else if (transform.position.x <= 3.5f && transform.position.x >= -3.5f && transform.position.y == 1.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x <= -6.5f && transform.position.x >= -13.5f && transform.position.y == -3.5f)
+                {
+                    EmergencyTurn();
+                }
+                else if (transform.position.x <= 13.5f && transform.position.x >= 6.5f && transform.position.y == -3.5f)
+                {
+                    EmergencyTurn();
+                }
+                else { 
                     transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
                 }
             break;
@@ -104,7 +155,8 @@ public class SnakeBoss : EnemyProperties
     IEnumerator MoveCycle() {
         Move();
     yield return new WaitForSeconds(moveCycle);
-        StartCoroutine(MoveCycle());
+        // The cycle continues until either the player dies, or the scene ends with the boss dying.
+        if(player.activeInHierarchy) StartCoroutine(MoveCycle());
     }
     // Change Direction. Left is 0, Right is 1, Up is 2, Down is 3.
     private void SetDirectionState(int direction) {
@@ -112,10 +164,49 @@ public class SnakeBoss : EnemyProperties
     }
     // Emergency Turn. Reflex that activates when at the border of the map. End with calculating the target.
     private void EmergencyTurn() {
+        bool throughFloatingPlatform = false;
         switch (directionState)
         {
             // Left
             case 0:
+                // Small Platform exception case.
+                if (transform.position.x == 14.5f && transform.position.y == -4.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                else if (transform.position.x == -5.5f && transform.position.y == -4.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                else if (transform.position.x == 4.5f && transform.position.y == 0.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                // Side of map.
                 if (transform.position.y == upperBound)
                 {
                     SetDirectionState(3);
@@ -134,6 +225,44 @@ public class SnakeBoss : EnemyProperties
                 break;
             // Right
             case 1:
+                // Small Platform exception case.
+                if (transform.position.x == -14.5f && transform.position.y == -4.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                else if (transform.position.x == 5.5f && transform.position.y == -4.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                else if (transform.position.x == -4.5f && transform.position.y == 0.5f)
+                {
+                    if (player.transform.position.y - transform.position.y > 0)
+                    {
+                        SetDirectionState(2);
+                    }
+                    else
+                    {
+                        SetDirectionState(3);
+                    }
+                    break;
+                }
+                // Side of map.
                 if (transform.position.y == upperBound)
                 {
                     SetDirectionState(3);
@@ -156,6 +285,56 @@ public class SnakeBoss : EnemyProperties
                 break;
             // Up
             case 2:
+                // Small Platform exception case.
+                if (transform.position.x <= 3.5f && transform.position.x >= -3.5f && transform.position.y == -0.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(4.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(-4.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                else if (transform.position.x <= -6.5f && transform.position.x >= -13.5f && transform.position.y == -5.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(-5.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(-14.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                else if (transform.position.x <= 13.5f && transform.position.x >= 6.5f && transform.position.y == -5.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(14.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(5.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                // Side of map.
                 if (transform.position.x == leftBound)
                 {
                     SetDirectionState(1);
@@ -178,6 +357,56 @@ public class SnakeBoss : EnemyProperties
                 break;
             // Down
             case 3:
+                // Small Platform exception case.
+                if (transform.position.x <= 3.5f && transform.position.x >= -3.5f && transform.position.y == 1.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(4.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(-4.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                else if (transform.position.x <= -6.5f && transform.position.x >= -13.5f && transform.position.y == -3.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(-5.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(-14.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                else if (transform.position.x <= 13.5f && transform.position.x >= 6.5f && transform.position.y == -3.5f)
+                {
+                    if (player.transform.position.x - transform.position.x > 0)
+                    {
+                        SetDirectionState(1);
+                        targetPos = new Vector3(14.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    else
+                    {
+                        SetDirectionState(0);
+                        targetPos = new Vector3(5.5f, transform.position.y, transform.position.z);
+                        throughFloatingPlatform = true;
+                    }
+                    break;
+                }
+                // Side of map.
                 if (transform.position.x == leftBound)
                 {
                     SetDirectionState(1);
@@ -214,7 +443,16 @@ public class SnakeBoss : EnemyProperties
                 break;
         }
         UnityEngine.Debug.Log("Emergency Turn.");
-        CalculateTarget();
+        if (throughFloatingPlatform)
+        {
+            horizontalOrVertical = true;
+            arrived = false;
+        }
+        if(!throughFloatingPlatform) CalculateTarget();
+    }
+    
+    private void EmergencyRetarget() { 
+    
     }
     // Determine Direction based on location of targetPos.
     private void ChooseDirection() {
