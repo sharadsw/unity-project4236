@@ -19,6 +19,10 @@ public class SnakeBoss : EnemyProperties
     private Vector3 targetPos;
     // Player Reference.
     private GameObject player;
+    // Arrived Flag.
+    public bool arrived = false;
+    // Checks for Horizontal or vertical movement. True means Horizontal, False means Vertical.
+    public bool horizontalOrVertical = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +31,8 @@ public class SnakeBoss : EnemyProperties
         player = GameObject.Find("Player");
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         // Remaining setup.
-        
+        // Set arrived as true when testing a path on start.
+        arrived = true;
         // Begin Cycle.
         StartCoroutine(MoveCycle());
     }
@@ -39,8 +44,10 @@ public class SnakeBoss : EnemyProperties
     }
     void Move()
     {
-        // If the target has been reached, calculate target and set direction state.
-        
+        // If the target has been reached, calculate a new target and set direction state.
+        if (arrived) {
+            CalculateTarget();
+        }
         // Using a switch to determine direction. Continues along the path until the target is reached or a wall is in sight.
         switch (directionState) { 
         // Left
@@ -83,7 +90,15 @@ public class SnakeBoss : EnemyProperties
                 }
             break;
         }
-        
+        // Check if arrived can be marked as true.
+        if (horizontalOrVertical)
+        {
+            if (transform.position.x+1 > targetPos.x && transform.position.x - 1 < targetPos.x) arrived = true;
+        }
+        else {
+            if (transform.position.y + 1 > targetPos.y && transform.position.y - 1 < targetPos.y) arrived = true;
+        }
+        if (arrived) UnityEngine.Debug.Log("Arrived.");
     }
     // Movement Cycle.
     IEnumerator MoveCycle() {
@@ -91,11 +106,11 @@ public class SnakeBoss : EnemyProperties
     yield return new WaitForSeconds(moveCycle);
         StartCoroutine(MoveCycle());
     }
-    // Change Direction
+    // Change Direction. Left is 0, Right is 1, Up is 2, Down is 3.
     private void SetDirectionState(int direction) {
         directionState = direction;
     }
-    // Emergency Turn. Reflex that activates when at the border of the map.
+    // Emergency Turn. Reflex that activates when at the border of the map. End with calculating the target.
     private void EmergencyTurn() {
         switch (directionState)
         {
@@ -199,11 +214,83 @@ public class SnakeBoss : EnemyProperties
                 break;
         }
         UnityEngine.Debug.Log("Emergency Turn.");
+        CalculateTarget();
+    }
+    // Determine Direction based on location of targetPos.
+    private void ChooseDirection() {
+        float bossX = transform.position.x;
+        float bossY = transform.position.y;
+        float targetX = targetPos.x;
+        float targetY = targetPos.y;
+        // Find direction based on distance and whether it would be positive or negative without absolute value.
+        
+        float xDistance = targetX - bossX;
+        float yDistance = targetY - bossY;
+        // Old if statement.
+        //if (Mathf.Abs(xDistance) <= Mathf.Abs(yDistance))
+        if(directionState == 2 || directionState == 3)
+        {
+            horizontalOrVertical = true;
+            if (xDistance> 0)
+            {
+                SetDirectionState(1);
+            }
+            else {
+                SetDirectionState(0);
+            }
+        }
+        else {
+            horizontalOrVertical = false;
+            if (yDistance > 0)
+            {
+                SetDirectionState(2);
+            }
+            else
+            {
+                SetDirectionState(3);
+            }
+        }
+        //UnityEngine.Debug.Log("X Distance: " + xDistance + " Y Distance: " + yDistance);
     }
     // Calculate Target. Big Brain Time.
     private void CalculateTarget() {
         // For player position, round to whole number, then if positive, subtract 0.5, and if negative, add 0.5.
-        
+        // Initialize Coordinates.
+        float targetX = 0;
+        float targetY = 0;
+        float targetZ = 0;
+        bool isPlayer = true;
+        // TODO: Once PowerUp is implemented, make a statement that sets isPlayer to false if the PowerUp is closer to the boss than the player.
+
+        if (isPlayer)
+        {
+            // Apply coordinates to player position.
+            targetX = player.transform.position.x;
+            targetY = player.transform.position.y;
+            // Coordinate cleanup.
+            targetX = Mathf.Round(targetX);
+            targetY = Mathf.Round(targetY);
+        }
+        if (targetX < 0)
+        {
+            // ONCE THE PLAYER IS PROPERLY SIZED, THIS MAY NEED TO CHANGE.
+            targetX -= 0.5f;
+        }
+        else {
+            targetX -= 0.5f;
+        }
+        if (targetY < 0)
+        {
+            targetY += 0.5f;
+        }
+        else {
+            targetY -= 0.5f;
+        }
+        //UnityEngine.Debug.Log(targetX + " " + targetY);
+        // Set targetPos to coordinates.
+        targetPos = new Vector3(targetX, targetY, targetZ);
+        ChooseDirection();
+        arrived = false;
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
