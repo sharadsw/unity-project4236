@@ -54,7 +54,7 @@ public class EnemyProperties : MonoBehaviour
         }
     }
     // Script to damage an enemy and destroy it if it runs out of health.
-    public void DamageEnemy() {
+    public virtual void DamageEnemy() {
         if (GetGuard() == false)
         {
             health--;
@@ -70,7 +70,7 @@ public class EnemyProperties : MonoBehaviour
 
         }
     }
-    IEnumerator DamageCooldown()
+    public IEnumerator DamageCooldown()
     {
         vulnerable = false;
         yield return new WaitForSeconds(damageCooldown);

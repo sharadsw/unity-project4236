@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SnakeBoss : EnemyProperties
 {
@@ -12,6 +15,8 @@ public class SnakeBoss : EnemyProperties
     [SerializeField] private float lowerBound = -8.5f;
     // Movement Cycle.
     [SerializeField] private float moveCycle = 0.1f;
+    // Bullet Cycle.
+    [SerializeField] private float bulletCycle = 4.0f;
     // Planned Direction
     // Left is 0, Right is 1, Up is 2, Down is 3.
     private int directionState = 0;
@@ -23,6 +28,14 @@ public class SnakeBoss : EnemyProperties
     public bool arrived = false;
     // Checks for Horizontal or vertical movement. True means Horizontal, False means Vertical.
     public bool horizontalOrVertical = true;
+    // Segment Reference.
+    public GameObject segment1;
+    public GameObject segment2;
+    public GameObject segment3;
+    // Bullet Reference.
+    public GameObject bulletPrefab;
+    // UI.
+    public TextMeshProUGUI healthText;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,8 +46,13 @@ public class SnakeBoss : EnemyProperties
         // Remaining setup.
         // Set arrived as true when testing a path on start.
         arrived = true;
-        // Begin Cycle.
+        // UI.
+        // Initialize UI on Start
+        healthText.gameObject.SetActive(true);
+        healthText.text = "Boss: " + health;
+        // Begin Cycles.
         StartCoroutine(MoveCycle());
+        StartCoroutine(BulletCycle());
     }
 
     // Update is called once per frame
@@ -48,6 +66,12 @@ public class SnakeBoss : EnemyProperties
         if (arrived) {
             CalculateTarget();
         }
+        // Segment 3 takes Segment 2's former position.
+        segment3.transform.position = segment2.transform.position;
+        // Segment 2 takes Segment 1's former position.
+        segment2.transform.position = segment1.transform.position;
+        // Segment 1 takes the player's former position.
+        segment1.transform.position = transform.position;
         // Using a switch to determine direction. Continues along the path until the target is reached or a wall is in sight.
         switch (directionState) { 
         // Left
@@ -150,6 +174,22 @@ public class SnakeBoss : EnemyProperties
             if (transform.position.y + 1 > targetPos.y && transform.position.y - 1 < targetPos.y) arrived = true;
         }
         if (arrived) UnityEngine.Debug.Log("Arrived.");
+    }
+    // Action of shooting.
+    void Shoot()
+    {
+        var heading = player.transform.position - transform.position;
+        var distance = heading.magnitude;
+        var direction = heading / distance; // This is now the normalized direction.
+        Quaternion aim = Quaternion.Euler(direction.x, direction.y, direction.z);
+        // Create Bullet.
+        Instantiate(bulletPrefab, transform.position, aim);
+    }
+    // Frequency that bullets spawn at.
+    IEnumerator BulletCycle() {
+        yield return new WaitForSeconds(bulletCycle);
+        Shoot();
+        if (player.activeInHierarchy) StartCoroutine(BulletCycle());
     }
     // Movement Cycle.
     IEnumerator MoveCycle() {
@@ -451,9 +491,6 @@ public class SnakeBoss : EnemyProperties
         if(!throughFloatingPlatform) CalculateTarget();
     }
     
-    private void EmergencyRetarget() { 
-    
-    }
     // Determine Direction based on location of targetPos.
     private void ChooseDirection() {
         float bossX = transform.position.x;
@@ -490,7 +527,7 @@ public class SnakeBoss : EnemyProperties
         }
         //UnityEngine.Debug.Log("X Distance: " + xDistance + " Y Distance: " + yDistance);
     }
-    // Calculate Target. Big Brain Time.
+    // Calculate Target.
     private void CalculateTarget() {
         // For player position, round to whole number, then if positive, subtract 0.5, and if negative, add 0.5.
         // Initialize Coordinates.
@@ -540,9 +577,48 @@ public class SnakeBoss : EnemyProperties
         if (collision.gameObject.CompareTag("PlayerAttack"))
         {
             DamageEnemy();
+            
             // Destroy the player's bullet that hit.
             Destroy(collision.gameObject);
         }
         
     }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        //UnityEngine.Debug.Log("Trigger Detected");
+        if (other.gameObject.CompareTag("PlayerAttack"))
+        {
+            // Destroy the player's bullet that hit.
+            Destroy(other.gameObject);
+            // Damage enemy.
+            DamageEnemy();
+            
+        }
+        // Die instantly if the death zone is collided with.
+        if (other.gameObject.CompareTag("DeathZone"))
+        {
+            EnemyDeath();
+        }
+    }
+    public override void DamageEnemy()
+    {
+        if (GetGuard() == false)
+        {
+            health--;
+            // Update UI.
+            healthText.text = "Boss: " + health;
+            StartCoroutine(DamageCooldown());
+            //UnityEngine.Debug.Log("Damaged Boss");
+            if (health <= 0)
+            {
+                SceneManager.LoadScene("WinScene");
+            }
+        }
+        else
+        {
+            // TODO: ADD A SOUND QUEUE TO INDICATE AN ATTACK BEING BLOCKED.
+
+        }
+    }
+    
 }

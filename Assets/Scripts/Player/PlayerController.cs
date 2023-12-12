@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float shootCooldown = 0.5f;
     [SerializeField] private float damageCooldown = 1.0f;
     [SerializeField] private float maxHealth = 3.0f;
+    // Fix for sprite height.
+    [SerializeField] private float bulletHeightOffset = 0.5f;
     // Reference Variables
     public float facingDirection = 1.0f;
     public GameObject bulletPrefab;
@@ -70,7 +72,8 @@ public class PlayerController : MonoBehaviour
     }
     // Script to shoot bullets.
     void Shoot() {
-        Instantiate(bulletPrefab, playerTransform.position, bulletPrefab.transform.rotation);
+        Vector2 bulletSpawn = new Vector2(playerTransform.position.x, playerTransform.position.y + bulletHeightOffset);
+        Instantiate(bulletPrefab, bulletSpawn, bulletPrefab.transform.rotation);
         StartCoroutine(ShootCooldown());
     }
     // Check whether the player is on the ground. Used to determine if the player can jump.
