@@ -11,11 +11,13 @@ public class Camper : EnemyProperties
     private GameObject player;
     [SerializeField] private GameObject enemyBullet;
     [SerializeField] private GameObject guardIndicator;
+    [SerializeField] private SpriteRenderer enemyRenderer;
     // Start is called before the first frame update
     void Start()
     {
         // Get the enemy's rigidbody and the player's script to be able to deal damage.
         enemyRb = GetComponent<Rigidbody2D>();
+        enemyRenderer = GetComponent<SpriteRenderer>();
         player = GameObject.Find("Player");
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         // Start Cycle.
@@ -56,7 +58,7 @@ public class Camper : EnemyProperties
         UnityEngine.Debug.Log("Vulnerable");
         yield return new WaitForSeconds(beforeShootTime);
         // Shoot now.
-        Shoot();
+        if(enemyRenderer.isVisible) Shoot();
         // Start AfterShoot.
         StartCoroutine(AfterShoot());
     }

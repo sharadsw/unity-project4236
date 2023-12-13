@@ -10,6 +10,7 @@ public class EnemyBullet : MonoBehaviour
     private Rigidbody2D rb;
     private float direction;
     protected PlayerController playerScript;
+    private SpriteRenderer bulletRenderer;
     // Stats
     public float bulletSpeed;
     public float bulletDamage;
@@ -18,10 +19,12 @@ public class EnemyBullet : MonoBehaviour
     {
         // Assign RigidBody.
         rb = GetComponent<Rigidbody2D>();
+        bulletRenderer = GetComponent<SpriteRenderer>();
         // Assign player.
         player = GameObject.Find("Player");
         playerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         
+
         // Direction.
         Vector3 direction = player.transform.position - transform.position;
         rb.velocity = new Vector2(direction.x, direction.y).normalized * bulletSpeed;

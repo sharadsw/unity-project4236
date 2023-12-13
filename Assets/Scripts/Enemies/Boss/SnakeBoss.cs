@@ -535,7 +535,7 @@ public class SnakeBoss : EnemyProperties
         float targetY = 0;
         float targetZ = 0;
         bool isPlayer = true;
-        // TODO: Once PowerUp is implemented, make a statement that sets isPlayer to false if the PowerUp is closer to the boss than the player.
+        
 
         if (isPlayer)
         {
@@ -616,7 +616,7 @@ public class SnakeBoss : EnemyProperties
         }
         else
         {
-            // TODO: ADD A SOUND QUEUE TO INDICATE AN ATTACK BEING BLOCKED.
+            
 
         }
     }

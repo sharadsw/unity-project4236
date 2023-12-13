@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - EnemyAttack
   - DeathZone
+  - BossDoor
   layers:
   - Default
   - TransparentFX

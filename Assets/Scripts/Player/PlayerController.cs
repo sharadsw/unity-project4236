@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -134,6 +135,9 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("DeathZone"))
         {
             PlayerDeath();
+        }
+        if (other.gameObject.CompareTag("BossDoor")) {
+            SceneManager.LoadScene("BossScene");
         }
     }
 
