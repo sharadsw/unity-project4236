@@ -12,6 +12,11 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Starting game");
         SceneManager.LoadScene("TestScene");
     }
+    public void PlayBoss()
+    {
+        Debug.Log("Starting at Boss");
+        SceneManager.LoadScene("BossScene");
+    }
     public void QuitGame() 
     {
         Debug.Log("Quitting game");
