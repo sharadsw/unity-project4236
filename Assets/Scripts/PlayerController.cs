@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerOLD : MonoBehaviour
 {
     public Transform playerTransform;
     public GameObject player;
